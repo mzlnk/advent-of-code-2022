@@ -1,6 +1,19 @@
 fun main() {
     fun part1(input: List<String>): Int {
-        return 0
+        val line = input.first()
+
+        val checker = HashSet<Char>()
+        for (i in 0 until (line.length - 3)) {
+            for (j in 0..3) {
+                checker.add(line[i + j])
+            }
+
+            if (checker.size == 4) {
+                return i + 4
+            }
+            checker.clear()
+        }
+        return -1
     }
 
     fun part2(input: List<String>): Int {
@@ -13,10 +26,10 @@ fun main() {
     val testInput3 = readInput("Day06_test03")
     val testInput4 = readInput("Day06_test04")
 
-    check(part1(testInput1) == 0)
-    check(part1(testInput2) == 0)
-    check(part1(testInput3) == 0)
-    check(part1(testInput4) == 0)
+    check(part1(testInput1) == 5)
+    check(part1(testInput2) == 6)
+    check(part1(testInput3) == 10)
+    check(part1(testInput4) == 11)
 
     check(part2(testInput1) == 0)
     check(part2(testInput2) == 0)
