@@ -1,5 +1,6 @@
 fun main() {
-    fun part1(input: List<String>): Int {
+
+    fun evaluate(input: List<String>): Directory {
         val root = Directory(name = "/")
 
         var current: Directory = root
@@ -34,6 +35,11 @@ fun main() {
                 }
             }
         }
+        return root
+    }
+
+    fun part1(input: List<String>): Int {
+        val root = evaluate(input)
 
         return root.listDirectoriesWithSize()
             .filter { it.second <= 100000 }
@@ -41,14 +47,22 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        return 0
+        val root = evaluate(input)
+
+        val totalSize = 70000000
+        val toRemove = 30000000 - (totalSize - root.size())
+
+        return root.listDirectoriesWithSize()
+            .map { it.second }
+            .filter { it >= toRemove }
+            .minOf { it }
     }
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day07_test")
 
     check(part1(testInput) == 95437)
-    check(part2(testInput) == 0)
+    check(part2(testInput) == 24933642)
 
     val input = readInput("Day07")
     println(part1(input))
@@ -81,19 +95,19 @@ data class Directory(
 
     fun listDirectoriesWithSize(): List<Pair<String, Int>> {
         val children = directories.values.flatMap { it.listDirectoriesWithSize() }
-        val self = Pair(name, readOrCalculateSize())
+        val self = Pair(name, size())
 
         return children + self
     }
 
-    private fun readOrCalculateSize(): Int {
+    fun size(): Int {
         this.size = this.size ?: calculateSize()
         return this.size!!
     }
 
     private fun calculateSize(): Int {
         val filesSize = files.sumOf { it.size }
-        val directoriesSize = directories.values.sumOf { it.readOrCalculateSize() }
+        val directoriesSize = directories.values.sumOf { it.size() }
 
         return filesSize + directoriesSize
     }
